@@ -1,0 +1,36 @@
+{
+  "name": "maze-generator",
+  "version": "0.0.1",
+  "description": "Create your own maze and see if your friends can solve it!",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/geekman-rohit/maze-generator.git"
+  },
+  "keywords": [
+    "html5-game",
+    "javascript-game",
+    "game",
+    "puzzle",
+    "maze",
+    "ball",
+    "maze-generator"
+  ],
+  "author": "Rohit Mulange <rohit@rohit.codes>",
+  "bugs": {
+    "url": "https://github.com/geekman-rohit/maze-generator/issues"
+  },
+  "homepage": "https://github.com/geekman-rohit/maze-generator#readme",
+  "devDependencies": {
+      "grunt": "^1.0.1",
+      "grunt-browser-sync": "^2.2.0",
+      "grunt-contrib-copy": "^1.0.0",
+      "grunt-contrib-cssmin": "^2.1.0",
+      "grunt-contrib-sass": "^1.0.0",
+      "grunt-contrib-uglify": "^2.3.0",
+      "grunt-contrib-watch": "^1.0.0",
+      "grunt-processhtml": "^0.4.1"
+  }
+}

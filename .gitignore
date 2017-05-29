@@ -57,3 +57,17 @@ typings/
 # dotenv environment variables file
 .env
 
+# Sass Cache
+.sass-cache
+
+# Css and Minified Css files
+**/*.css
+**/*.css.map
+**/*.min.css
+
+# Build Directories
+build
+css
+
+# Minified JS Files
+**/*.min.js

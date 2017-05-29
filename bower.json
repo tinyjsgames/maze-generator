@@ -1,0 +1,29 @@
+{
+  "name": "maze-generator",
+  "description": "Create your own maze and see if your friends can solve it!",
+  "main": "",
+  "authors": [
+    "Rohit Mulange <rohit@rohit.codes>"
+  ],
+  "keywords": [
+    "html5-game",
+    "javascript-game",
+    "game",
+    "puzzle",
+    "maze",
+    "ball"
+  ],
+  "homepage": "https://github.com/geekman-rohit/maze-generator",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^3.2.1",
+    "phaser": "^2.6.2"
+  }
+}
