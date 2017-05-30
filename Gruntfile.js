@@ -20,7 +20,7 @@ module.exports = function(grunt) {
             tasks: ['sass']
         },
         js: {
-          files: ["js/**/*.js"],
+          files: ["js/**/app.js"],
           tasks: ['uglify']
         }
     },

@@ -1,14 +1,96 @@
 body {
     padding: 0;
     margin: 0;
-    background-color: #555;
+    background-color: #eee;
     .container {
         #game canvas {
             transform: scale(1);
-            transform-origin: top;
+            transform-origin: bottom;
             margin: auto;
             margin-top: 10vh;
             box-shadow: 0 0 1px 1px rgba(50,50,50,0.1);
         }
     }
+}
+table {
+    margin: auto;
+    margin-top: 10vh;
+    border-collapse: collapse;
+    ///width: 100%;
+    tr {
+        td {
+            box-sizing: border-box;
+            width: 32px;
+            height: 32px;
+            border:1px solid transparent;
+
+
+        }
+    }
+    tr {
+        td.wall {
+            background-color: #000;
+
+
+
+        }
+        td.joint {
+
+
+        }
+
+    }
+    .maze-creating {
+        tr {
+            td.wall {
+                cursor: pointer;
+                &.vertical {
+                    width: 8px;
+                }
+                &.horizontal {
+                    height: 8px;
+                }
+                &:hover {
+                    background-color: red;
+                }
+                &.inactive {
+                    background-color: #ddd;
+                    &:hover {
+                        background-color: green;
+                    }
+                }
+            }
+            td.joint {
+                height: 8px;
+                width: 8px;
+                background-color: #777;
+
+            }
+        }
+    }
+    .maze-playing {
+        tr {
+
+
+            td.wall {
+                &.vertical {
+                    width: 4px;
+                }
+                &.horizontal {
+                    height: 4px;
+                }
+
+                &.inactive {
+                    background-color: none;
+                }
+            }
+            td.joint {
+                height: 4px;
+                width: 4px;
+                background-color: #111;
+
+            }
+        }
+    }
+
 }
