@@ -24,7 +24,9 @@ table {
             height: 32px;
             text-align: center;
             border:1px solid transparent;
-
+            &.green {
+                background-color: rgba(120,200,120,1);
+            }
 
         }
     }

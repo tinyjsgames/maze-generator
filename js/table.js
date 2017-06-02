@@ -133,7 +133,12 @@ MazeGame.prototype.generateWallCellVertical = function (newrow,i,j) {
 MazeGame.prototype.wallClicked = function (clickedwall, mazegame) {
     clickedwall.toggleClass('inactive');
     //this.urlInactiveCells();
-    mazegame.generateURL();
+    var path =  mazegame.pathFind(mazegame.startingPosition, mazegame.endingPosition);
+    if(path !== false) {
+        mazegame.paintPath(path);
+    } else {
+        mazegame.paintPath(path);
+    }
 }
 MazeGame.prototype.loadInactiveCells = function() {
     grid = this.grid;
@@ -176,9 +181,7 @@ MazeGame.prototype.compressedCellData = function () {
         str = "i";
     }
     for(var i=0;i<x.length;i++) {
-        var xi = x[i].i<10 ? "0"+x[i].i : ""+x[i].i;
-        var xj = x[i].j<10 ? "0"+x[i].j : ""+x[i].j;
-        str += "" + xi + xj;
+        str = this.nodeToString({i:i,j:j});
     }
 
     return str;
@@ -201,9 +204,8 @@ MazeGame.prototype.disableAllButWalls = function(walldata) {
     for(var i=0; i<grid.length;i++) {
         for(var j=0; j<grid[i].length;j++) {
             if(grid[i][j].hasClass('wall')) {
-                var stri = i < 10 ? "0"+i: ""+ i;
-                var strj = j < 10 ? "0"+j: ""+ j;
-                if(walldata.indexOf(stri+strj)>=0) {
+                var str = this.nodeToString({i:i,j:j});
+                if(walldata.indexOf(str)>=0) {
                     grid[i][j].removeClass('inactive');
                 } else {
                     grid[i][j].addClass('inactive');
@@ -342,9 +344,129 @@ MazeGame.prototype.moveBall = function(newposi, newposj) {
         this.ball.j = newposj;
     }
 }
+MazeGame.prototype.adjacentNodeOpenCheck = function(wall,adjnode) {
+    var grid = this.grid;
+    if(typeof(grid[wall.i])!=='undefined' && typeof(grid[wall.i][wall.j])!=='undefined') {
+        if(grid[wall.i][wall.j].hasClass('inactive')) {
+            if(typeof(grid[adjnode.i])!=='undefined' && typeof(grid[adjnode.i][adjnode.j])!=='undefined') {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+MazeGame.prototype.adjacentNodes = function(node) {
+
+        var grid = this.grid;
+        var adj = new Array(); //Array of Adjacent Nodes
+        if(typeof(grid[node.i])!=='undefined' && typeof(grid[node.i][node.j])!=='undefined') {
+            //Node Exists
+            //Check if the node above is conncected
+            if(this.adjacentNodeOpenCheck({i:node.i-1,j: node.j},{i:node.i-2,j:node.j})) {
+                adj.push({i: node.i-2,j:node.j})
+            }
+            //Check if the node bellow is conncected
+            if(this.adjacentNodeOpenCheck({i:node.i+1,j: node.j},{i:node.i+2,j:node.j})) {
+                adj.push({i: node.i+2,j:node.j})
+            }
+            //Check if the node to right is conncected
+            if(this.adjacentNodeOpenCheck({i:node.i,j: node.j+1},{i:node.i,j:node.j+2})) {
+                adj.push({i: node.i,j:node.j+2})
+            }
+            //Check if the node to left is conncected
+            if(this.adjacentNodeOpenCheck({i:node.i,j: node.j-1},{i:node.i,j:node.j-2})) {
+                adj.push({i: node.i,j:node.j-2})
+            }
+        }
+        return adj;
+};
+
+
+MazeGame.prototype.pathFind = function(source, destination) {
+
+    /*
+        Find Path from Source to Desitination.
+        We treat the grid as a graph with cells as vertices and Inactive walls as edges.
+        We use BFS (Breadth First Search)
+    */
+    this.clearGraphData();
+    var queue = new Array();
+    source.d = 0;
+    queue.push(source);
+    var mazegame = this;
+    var count = 0;
+    while(queue.length > 0) {
+        count++;
+        var node = queue.shift();
+        var gridcell = mazegame.getNode(node);
+        if(gridcell.data('graphdepth') == null || typeof(gridcell.data('graphdepth'))=='undefined') {
+            gridcell.data('graphdepth',node.d);
+            var adjacents = mazegame.adjacentNodes(node);
+            for( var k = 0;k < adjacents.length; k++) {
+                var nextnode = adjacents[k];
+                var nextgridcell = mazegame.getNode(nextnode);
+                if(nextgridcell.data('graphdepth') == null || typeof(gridcell.data('graphdepth'))=='undefined') {
+                    nextnode.d = node.d+1;
+                    queue.push(nextnode);
+                    nextgridcell.data('graphparent',node)
+                }
+
+            }
+        }
+
+    }
+
+    var des = this.getNode(destination);
+
+    if(des.data('graphdepth') == null || typeof(des.data('graphdepth'))=='undefined') {
+        return false;
+    } else {
+        // Build an array of nodes representing a path from destination to source
+        var path = new Array();
+        var node = destination;
+        while(1) {
+            path.push(node);
+            var des = this.getNode(node);
+            if(typeof(des.data('graphparent')) == 'undefined' || des.data('graphparent') == null) {
+                break;
+            } else {
+                var node = des.data('graphparent');
+            }
+
+        }
+        return path;
+    }
+}
+MazeGame.prototype.paintPath = function (path) {
+    $('td').removeClass('green');
+    if(path!==false) {
+        for(var k=0;k<path.length;k++) {
+            var gridcell = this.getNode(path[k]);
+            gridcell.addClass('green');
+        }
+    }
+
+}
+MazeGame.prototype.clearGraphData = function() {
+    var grid = this.grid;
+    for(var i=1; i<grid.length;i+=2) {
+        for(var j=1; j<grid[i].length;j+=2) {
+            grid[i][j].data('graphdepth',null);
+        }
+    }
+}
+MazeGame.prototype.getNode = function(node) {
+    return this.grid[node.i][node.j];
+}
+MazeGame.prototype.nodeToString = function(node) {
+    var stri = node.i < 10 ? "0"+node.i: ""+ node.i;
+    var strj = node.j < 10 ? "0"+node.j: ""+ node.j;
+    return stri+strj;
+}
 $(function(){
     var game = new MazeGame('#game table tbody');
-    game.generator = false;
+    game.generator = true;
     game.start();
     game.loadFromURL();
     game.startInput();
