@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,500,600,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Quantico" rel="stylesheet">
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
+<!-- build:js js/web.min.js -->
+<script src="js/components.js"></script>
+    <script src="js/table.js"></script>
+<!-- /build -->
+<!-- build:css css/style.min.css -->
+    <link rel="stylesheet" href="css/style.css" />
+<!-- /build -->
+    <script type="text/javascript">
+    var string = "202001013939i0102010401060108011001140116011801200126012801300132013601380203020702130217022102230225022902330239030203040308031003120320032603340336040904110415041704190423042904310439050205040506051005140520052205240526052805300534053605380601060506130615061706250633063907020708071007180720072207240730073207340736080508090813081708190827082908390902090409060908091009120914091609220924093009340936100110071009101310171019102110271029103110331039110411161122112411261138120112031205120712091211121312151219122112291231123312351237130213061318132413261328140114031409141114131415142114231429143514371504150815101516152015241526153215341536153816011603160516131617162116231627163117041706170817101712171417181720172617281730173217341738180118051809181518231829183318351837190219081910191219161918192019241926192819301936200520112013202120292031203320352039210221042106210821122116211821242128213022052209222322252233223522372239230223082310231223142316231823202326232823322334240124032405240724092419242124232425242924312433243724392502250425082514251625202534253625382601260526092611261726212625262726292631263726392702270627082712271427162718272027242732273427382805280728152817282328252827283328352902290429062908291029122914292029222924292829302936293830073009301130173019302930313033310231043112311431163122312431263128313431363138320132033205320732093219322332313233323933023304330633123316331833203326332833303332333634093411341334193423342534273435350435063508351435163518352235263530353235343536353836013603360536073611361936213623362936373639370237083710371237143716372437263728373037323734373838053807381538193821382938353902390439103912391839203922392439263930393239363938"
+    $(function(){
+        var game = new MazeGame('#game table tbody');
+        if(getQueryVariable("d")) {
+            game.loadGridInfoFromURL();
+        } else {
+            game.loadGridInfoFromString(string);
+        }
+
+        game.generator = true;
+        game.start();
+
+        if(getQueryVariable("d")) {
+            game.loadFromURL();
+        } else {
+            game.loadFromString(string);
+        }
+        game.onChange = function(mazegame) {
+            $('input.url').val(mazegame.generateURL());
+        }
+        $('input.url').val(game.generateURL());
+        var path =  game.pathFind(game.startingPosition, game.endingPosition);
+        if(path !== false) {
+            game.paintPath(path);
+        } else {
+            game.paintPath(path);
+        }
+
+        game.startInput();
+    });
+    </script>
+</head>
+<body>
+
+
+            <div class="container">
+            <div class="feature">
+
+            </div>
+            <div class="page pull-up">
+                <div class="post">
+
+                    <div class="card">
+                        <div class="heading">
+                            <h1>Maze Generator</h1>
+                        </div>
+                        <div class="split reverse large-only-split">
+
+
+                        <div class="right">
+
+                            <div class="info-cell">
+                                <div class="value">19x19</div>
+                                <div class="type">Maze Size</div>
+                            </div>
+                            <div class="info-cell" title="">
+                                <div class="value">
+                                    <span class="active-only">78 <span class="subtext">moves</span></span>
+                                    <span class="inactive-only">
+                                        <i class="fa fa-times-circle"></i>
+                                    </span>
+                                </div>
+
+                                <div class="type">Shortest Path</div>
+                            </div>
+                            <div class="info-cell green popup-button" data-target="share-popup">
+                                <div class="value">
+                                    <i class="fa fa-share"></i>
+                                </div>
+                                <div class="type">Share</div>
+
+                            </div>
+
+
+
+                        </div>
+
+                        <div class="left">
+                            <div class="game" id="game">
+                            <div class="mazegame-container">
+                                <div class="mazegame-game">
+                                <table class="table">
+                                  <tbody>
+                                  </tbody>
+                                </table>
+                                </div>
+                            </div>
+
+
+
+                            </div>
+                            <!--
+                            <div class="ui">
+                                <button type="button" name="button" class="button green share">Share</button>
+                                <input class="url" readonly="">
+
+                            </input>
+
+                            </div>
+                            -->
+                        </div>
+                        </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+        <div class="cover"></div>
+        <div class="popup" id="share-popup">
+            <div class="box">
+                <div class="heading">
+                    <h4>Share</h4>
+                    <span class="close">
+                        <i class="fa fa-times-rectangle popup-close" data-target="share-popup"></i>
+                    </span>
+                </div>
+                <div class="content">
+                    <input type="text" class="url" id="urlinput">
+                    <button class="input-addon copy-button" data-target="urlinput" data-success="message" data-failure="message-failure">Copy URL</button>
+                    <div class="fix-height-1"><span class="message hidden">Copied <i class="fa fa-check-circle success"></i></span>
+                    <span class="message-failure hidden">Could Not Copy <i class="fa fa-times-circle fail"></i></span>
+                    </div>
+                </div>
+                <div class="subtext">
+                    <p>
+                        Copy and Share the URL above to invite your friends to Play!
+                    </p>
+                </div>
+            </div>
+
+        </div>
+</body>
+</html>

@@ -24,6 +24,7 @@
   ],
   "dependencies": {
     "jquery": "^3.2.1",
-    "phaser": "^2.6.2"
+    "phaser": "^2.6.2",
+    "font-awesome": "^4.7.0"
   }
 }

@@ -4,15 +4,10 @@ globalGameConfig = {
     backgroundColor: '#eeeeee',
     grid: {
         h:20,
-        v:20
+        v:15
+
     },
-    dimension: {
-        length:64,
-        width:16
-    }
 }
-globalGameConfig.width = ((globalGameConfig.dimension.length)*globalGameConfig.grid.h)+globalGameConfig.dimension.width;
-globalGameConfig.height = ((globalGameConfig.dimension.length)*globalGameConfig.grid.v)+globalGameConfig.dimension.width;
 function getQueryVariable(variable)
 {
        var query = window.location.search.substring(1);
@@ -28,8 +23,14 @@ function getQueryVariable(variable)
 var MazeGame = function(selector) {
 
     this.table = $(selector);
+    this.onChange = null;
     this.grid = new Array();
     this.generator = false;
+    this.moves = 0;
+    this.gridsize = {
+        h:globalGameConfig.grid.h,
+        v:globalGameConfig.grid.v
+    }
     this.colors = {
         wall: '#111111',
     };
@@ -42,7 +43,7 @@ var MazeGame = function(selector) {
     };
     //Represents the Endign Cell in the Grid
     this.endingPosition = {
-        i:39,
+        i:29,
         j:39
     };
     this.ball = {
@@ -63,7 +64,7 @@ MazeGame.prototype.start = function() {
 }
 
 MazeGame.prototype.generateMaze = function() {
-    for(var i=0;i<globalGameConfig.grid.v; i++) {
+    for(var i=0;i<this.gridsize.v; i++) {
         this.grid[i*2] = new Array();
         this.grid[(i*2)+1] = new Array();
         this.generateWallRow(i*2);
@@ -76,7 +77,7 @@ MazeGame.prototype.generateMaze = function() {
 MazeGame.prototype.generateWallRow = function (i) {
     var newrow = $('<tr></tr>');
     this.table.append(newrow);
-    for(var j=0;j<globalGameConfig.grid.v; j++) {
+    for(var j=0;j<this.gridsize.h; j++) {
         this.generateJointCell(newrow,i,j*2);
         this.generateWallCellHorizontal(newrow,i,(j*2)+1);
     }
@@ -86,7 +87,7 @@ MazeGame.prototype.generateWallRow = function (i) {
 MazeGame.prototype.generateRow = function (i) {
     var newrow = $('<tr></tr>');
     this.table.append(newrow);
-    for(var j=0;j<globalGameConfig.grid.v; j++) {
+    for(var j=0;j<this.gridsize.h; j++) {
         this.generateWallCellVertical(newrow,i,j*2);
         this.generateCell(newrow,i,(j*2+1));
     }
@@ -132,12 +133,15 @@ MazeGame.prototype.generateWallCellVertical = function (newrow,i,j) {
 }
 MazeGame.prototype.wallClicked = function (clickedwall, mazegame) {
     clickedwall.toggleClass('inactive');
-    //this.urlInactiveCells();
+
     var path =  mazegame.pathFind(mazegame.startingPosition, mazegame.endingPosition);
     if(path !== false) {
         mazegame.paintPath(path);
     } else {
         mazegame.paintPath(path);
+    }
+    if(this.onChange !== null) {
+        this.onChange(this);
     }
 }
 MazeGame.prototype.loadInactiveCells = function() {
@@ -181,7 +185,8 @@ MazeGame.prototype.compressedCellData = function () {
         str = "i";
     }
     for(var i=0;i<x.length;i++) {
-        str = this.nodeToString({i:i,j:j});
+
+        str += this.nodeToString(x[i]);
     }
 
     return str;
@@ -191,11 +196,22 @@ MazeGame.prototype.compressedCellData = function () {
 }
 MazeGame.prototype.generateURL = function () {
     var string = this.compressedCellData();
+    var sizeh = this.gridsize.h < 10 ? "0"+this.gridsize.h : ""+this.gridsize.h;
+    var sizev = this.gridsize.v < 10 ? "0"+this.gridsize.v : ""+this.gridsize.v;
+    var start = this.nodeToString(this.startingPosition);
+    var end = this.nodeToString(this.endingPosition);
+    var str = sizeh+sizev+start+end+string;
     var l = document.location.href;
     var link = document.createElement("a");
     link.href = l;
-    var url = link.protocol + "//" + link.host + "/" + link.pathname + "?d=" + string;
-    $('.debugdata').html(url);
+    var host = link.host.toString();
+    if(host.substring(host.length-1,host.length)!= "/" && link.pathname.substring(0,1)!= "/") {
+        var url = link.protocol + "//" + host + "/" + link.pathname + "?d=" + str;
+    } else {
+        var url = link.protocol + "//" + host + link.pathname + "?d=" + str;
+
+    }
+    url = url.replace('make','play');
     return url;
     /* Load Merge Data Inside a URL */
 }
@@ -257,31 +273,89 @@ MazeGame.prototype.disableAllWalls = function() {
         }
     }
 }
-MazeGame.prototype.loadFromURL = function() {
-    var data = getQueryVariable("d");
+MazeGame.prototype.loadGridInfoFromURL = function() {
+    var string = getQueryVariable("d");
+    if(string) {
+        this.gridsize.h = parseInt(string.substring(0,2));
+        this.gridsize.v = parseInt(string.substring(2,4));
+        this.startingPosition.i = parseInt(string.substring(4,6));
+        this.startingPosition.j = parseInt(string.substring(6,8));
+        this.endingPosition.i = parseInt(string.substring(8,10));
+        this.endingPosition.j = parseInt(string.substring(10,12));
+    }
 
-    if(data) {
-        var type = data.substring(0,1);
-        var griddata = data.substring(1);
-        var processeddata = new Array();
-        var array = griddata.match(/.{1,4}/g);
-        if(array!==null) {
-            for(var k=0; k<array.length; k++) {
-                var item = array[k];
-                var indexes = item.match(/.{1,2}/g);
-                if(indexes.length==2) {
-                    processeddata.push(item);
+}
+MazeGame.prototype.loadFromURL = function() {
+    var string = getQueryVariable("d");
+    if(string) {
+        var data = string.substring(12);
+        if(data) {
+            var type = data.substring(0,1);
+            var griddata = data.substring(1);
+            var processeddata = new Array();
+            var array = griddata.match(/.{1,4}/g);
+            if(array!==null) {
+                for(var k=0; k<array.length; k++) {
+                    var item = array[k];
+                    var indexes = item.match(/.{1,2}/g);
+                    if(indexes.length==2) {
+                        processeddata.push(item);
+                    }
                 }
             }
-        }
-        if(type=="i") {
-            // Data Represents which grid items are disabled
-            this.enableAllButWalls(processeddata);
-        } else {
-            this.disableAllButWalls(processeddata);
-            //Data Represents which grid items are enabled
+            if(type=="i") {
+                // Data Represents which grid items are disabled
+                this.enableAllButWalls(processeddata);
+            } else {
+                this.disableAllButWalls(processeddata);
+                //Data Represents which grid items are enabled
 
+            }
         }
+
+    }
+
+
+}
+MazeGame.prototype.loadGridInfoFromString = function(string) {
+
+    if(string) {
+        this.gridsize.h = parseInt(string.substring(0,2));
+        this.gridsize.v = parseInt(string.substring(2,4));
+        this.startingPosition.i = parseInt(string.substring(4,6));
+        this.startingPosition.j = parseInt(string.substring(6,8));
+        this.endingPosition.i = parseInt(string.substring(8,10));
+        this.endingPosition.j = parseInt(string.substring(10,12));
+    }
+
+}
+MazeGame.prototype.loadFromString = function(string) {
+    if(string) {
+        var data = string.substring(12);
+        if(data) {
+            var type = data.substring(0,1);
+            var griddata = data.substring(1);
+            var processeddata = new Array();
+            var array = griddata.match(/.{1,4}/g);
+            if(array!==null) {
+                for(var k=0; k<array.length; k++) {
+                    var item = array[k];
+                    var indexes = item.match(/.{1,2}/g);
+                    if(indexes.length==2) {
+                        processeddata.push(item);
+                    }
+                }
+            }
+            if(type=="i") {
+                // Data Represents which grid items are disabled
+                this.enableAllButWalls(processeddata);
+            } else {
+                this.disableAllButWalls(processeddata);
+                //Data Represents which grid items are enabled
+
+            }
+        }
+
     }
 
 
@@ -342,6 +416,9 @@ MazeGame.prototype.moveBall = function(newposi, newposj) {
         this.grid[newposi][newposj].append(this.ball.object);
         this.ball.i = newposi;
         this.ball.j = newposj;
+        if(!this.generator) {
+            this.moves++;
+        }
     }
 }
 MazeGame.prototype.adjacentNodeOpenCheck = function(wall,adjnode) {
@@ -464,10 +541,3 @@ MazeGame.prototype.nodeToString = function(node) {
     var strj = node.j < 10 ? "0"+node.j: ""+ node.j;
     return stri+strj;
 }
-$(function(){
-    var game = new MazeGame('#game table tbody');
-    game.generator = true;
-    game.start();
-    game.loadFromURL();
-    game.startInput();
-});
