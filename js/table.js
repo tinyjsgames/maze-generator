@@ -26,7 +26,9 @@ var MazeGame = function(selector) {
     this.onChange = null;
     this.grid = new Array();
     this.generator = false;
+    this.hasPath = false;
     this.moves = 0;
+    this.minmoves = 0;
     this.gridsize = {
         h:globalGameConfig.grid.h,
         v:globalGameConfig.grid.v
@@ -136,9 +138,9 @@ MazeGame.prototype.wallClicked = function (clickedwall, mazegame) {
 
     var path =  mazegame.pathFind(mazegame.startingPosition, mazegame.endingPosition);
     if(path !== false) {
-        mazegame.paintPath(path);
+
     } else {
-        mazegame.paintPath(path);
+
     }
     if(this.onChange !== null) {
         this.onChange(this);
@@ -497,6 +499,9 @@ MazeGame.prototype.pathFind = function(source, destination) {
     var des = this.getNode(destination);
 
     if(des.data('graphdepth') == null || typeof(des.data('graphdepth'))=='undefined') {
+        mazegame.paintPath(false);
+        mazegame.hasPath = false;
+        mazegame.minmoves = -1;
         return false;
     } else {
         // Build an array of nodes representing a path from destination to source
@@ -512,6 +517,9 @@ MazeGame.prototype.pathFind = function(source, destination) {
             }
 
         }
+        mazegame.hasPath = true;
+        mazegame.minmoves = path.length-1;
+        mazegame.paintPath(path);
         return path;
     }
 }

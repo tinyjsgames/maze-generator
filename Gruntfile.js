@@ -27,24 +27,29 @@ module.exports = function(grunt) {
     processhtml: {
         build: {
             files: {
-              'build/web/index.html': ['index.html'],
+              'build/web/make/index.html': ['make/index.html'],
+              'build/web/play/index.html': ['play/index.html'],
             }
         }
     },
     uglify: {
         target: {
           files: {
-            'js/web.min.js': ['js/app.js'],
+            'js/make.min.js': ['js/components.js','js/table.js','js/make.js'],
+            'js/play.min.js': ['js/components.js','js/table.js','js/play.js'],
           }
         }
     },
     copy: {
       web: {
         files: [
-          {expand: true, src: ['js/web.min.js'], dest: 'build/web/'},
+          {expand: true, src: ['js/make.min.js'], dest: 'build/web/'},
+          {expand: true, src: ['js/play.min.js'], dest: 'build/web/'},
           {expand: true, src: ['css/style.min.css'], dest: 'build/web/'},
           {expand: true, src: ['bower_components/jquery/dist/jquery.min.js'], dest: 'build/web/'},
-          {expand: true, src: ['bower_components/phaser/build/phaser.min.js'], dest: 'build/web/'}
+          {expand: true, src: ['bower_components/phaser/build/phaser.min.js'], dest: 'build/web/'},
+          {expand: true, src: ['bower_components/font-awesome/css/font-awesome.min.css'], dest: 'build/web/'},
+          {expand: true, src: ['bower_components/font-awesome/fonts/*'], dest: 'build/web/'}
         ],
       },
     },

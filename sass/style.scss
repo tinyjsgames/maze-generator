@@ -223,6 +223,20 @@ table {
         color: white;
         background-color: #eee;
     }
+    .inactive-only {
+        display: none;
+    }
+    .active-only {
+        display: inline-block;
+    }
+    &.inactive {
+        .active-only {
+            display: none;
+        }
+        .inactive-only {
+            display: inline-block;
+        }
+    }
 }
 .cover {
     position: fixed;
