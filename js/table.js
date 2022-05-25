@@ -364,7 +364,8 @@ MazeGame.prototype.loadFromString = function(string) {
 }
 MazeGame.prototype.startInput = function() {
     var mazegame = this;
-    $(document).on('keypress',function(event){
+    $(document).on('keydown',function(event){
+        console.log(event.keyCode)
         if(event.keyCode==37) {
             mazegame.moveBallLeft();
         }
