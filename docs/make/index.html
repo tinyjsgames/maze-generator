@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,500,600,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Quantico" rel="stylesheet">
+    <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.min.css">
+<script src="../js/make.min.js"></script>
+<link rel="stylesheet" href="../css/style.min.css">
+
+</head>
+<body>
+
+
+            <div class="container">
+            <div class="feature">
+
+            </div>
+            <div class="page pull-up">
+                <div class="post">
+
+                    <div class="card">
+                        <div class="heading">
+                            <h1>Maze Generator</h1>
+                        </div>
+                        <div class="split reverse large-only-split">
+
+
+                        <div class="right">
+
+                            <div class="info-cell">
+                                <div class="grid value">19x19</div>
+                                <div class="type">Maze Size</div>
+                            </div>
+                            <div class="info-cell minmoves" title="">
+                                <div class="value">
+                                    <span class="active-only"><span class="moves">0</span> <span class="subtext">moves</span></span>
+                                    <span class="inactive-only">
+                                        <i class="fa fa-times-circle"></i>
+                                    </span>
+                                </div>
+
+                                <div class="type">Shortest Path</div>
+                            </div>
+                            <div class="info-cell green popup-button" data-target="share-popup">
+                                <div class="value">
+                                    <i class="fa fa-share"></i>
+                                </div>
+                                <div class="type">Share</div>
+
+                            </div>
+
+
+
+                        </div>
+
+                        <div class="left">
+                            <div class="game" id="game">
+                            <div class="mazegame-container">
+                                <div class="mazegame-game">
+                                <table class="table">
+                                  <tbody>
+                                  </tbody>
+                                </table>
+                                </div>
+                            </div>
+
+
+
+                            </div>
+                            <!--
+                            <div class="ui">
+                                <button type="button" name="button" class="button green share">Share</button>
+                                <input class="url" readonly="">
+
+                            </input>
+
+                            </div>
+                            -->
+                        </div>
+                        </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+        <div class="cover"></div>
+        <div class="popup" id="share-popup">
+            <div class="box">
+                <div class="heading">
+                    <h4>Share</h4>
+                    <span class="close">
+                        <i class="fa fa-times-rectangle popup-close" data-target="share-popup"></i>
+                    </span>
+                </div>
+                <div class="content">
+                    <input type="text" class="url" id="urlinput">
+                    <button class="input-addon copy-button" data-target="urlinput" data-success="message" data-failure="message-failure">Copy URL</button>
+                    <div class="fix-height-1"><span class="message hidden">Copied <i class="fa fa-check-circle success"></i></span>
+                    <span class="message-failure hidden">Could Not Copy <i class="fa fa-times-circle fail"></i></span>
+                    </div>
+                </div>
+                <div class="subtext">
+                    <p>
+                        Copy and Share the URL above to invite your friends to Play!
+                    </p>
+                </div>
+            </div>
+
+        </div>
+</body>
+</html>

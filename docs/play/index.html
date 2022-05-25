@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,500,600,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Quantico" rel="stylesheet">
+<script src="js/web.min.js"></script>
+<link rel="stylesheet" href="css/style.min.css">
+    <script type="text/javascript">
+    $(function(){
+        var game = new MazeGame('#game table tbody');
+        game.loadGridInfoFromURL();
+        game.generator = false;
+        game.start();
+        game.loadFromURL();
+        game.startInput();
+    });
+    </script>
+</head>
+<body>
+
+
+            <div class="container">
+            <div class="feature">
+
+            </div>
+            <div class="page pull-up">
+                <div class="post">
+
+                    <div class="card">
+
+                        <div class="right">
+                            <div class="heading">
+                                <h1>Maze Generator</h1>
+                            </div>
+                            <div class="actions ui">
+                                <div class="panel">
+
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+
+                        <div class="left">
+                            <div class="game" id="game">
+                            <div class="mazegame-container">
+                                <div class="mazegame-game">
+                                <table class="table">
+                                  <tbody>
+                                  </tbody>
+                                </table>
+                                </div>
+                            </div>
+
+
+
+                            </div>
+
+                        </div>
+
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+</body>
+</html>

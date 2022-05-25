@@ -66,8 +66,6 @@ typings/
 **/*.min.css
 
 # Build Directories
-build
-css
 
 # Minified JS Files
 **/*.min.js
